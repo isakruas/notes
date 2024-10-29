@@ -93,6 +93,20 @@ list:
 		fi; \
 	done
 
+# Format notes to break lines longer than 80 characters
+format:
+	@echo "Formatting lines longer than 80 characters in each note:"
+	@for note in $(NOTES); do \
+		while IFS= read -r line || [ -n "$$line" ]; do \
+			if [ $$(echo "$$line" | wc -c) -gt 121 ]; then \
+				echo "$$line" | fold -s -w 80; \
+			else \
+				echo "$$line"; \
+			fi; \
+		done < "$$note" > "$$note.tmp" && mv "$$note.tmp" "$$note"; \
+		echo "Formatted $$(basename $$note)"; \
+	done
+
 # Open a note in the default text editor
 edit:
 	@bash -c ' \
